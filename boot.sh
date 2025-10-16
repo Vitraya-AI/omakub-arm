@@ -27,4 +27,14 @@ if [[ $OMAKUB_REF != "master" ]]; then
 fi
 
 echo "Installation starting..."
-source ~/.local/share/omakub/install.sh
+
+# Detect the system architecture and run the matching installer. Default to the
+# original installer if the ARM64 script is not available so this boot script
+# still works for upstream clones.
+architecture="$(dpkg --print-architecture 2>/dev/null || uname -m)"
+
+if [[ "$architecture" =~ ^(arm64|aarch64)$ ]] && [[ -f ~/.local/share/omakub/install-arm64.sh ]]; then
+  source ~/.local/share/omakub/install-arm64.sh
+else
+  source ~/.local/share/omakub/install.sh
+fi

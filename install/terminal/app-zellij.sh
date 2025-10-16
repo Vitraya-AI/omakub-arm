@@ -1,7 +1,22 @@
 #!/bin/bash
 
 cd /tmp
-wget -O zellij.tar.gz "https://github.com/zellij-org/zellij/releases/latest/download/zellij-x86_64-unknown-linux-musl.tar.gz"
+ARCH="$(dpkg --print-architecture)"
+
+case "$ARCH" in
+  amd64)
+    ZELLIJ_ARCH="x86_64-unknown-linux-musl"
+    ;;
+  arm64)
+    ZELLIJ_ARCH="aarch64-unknown-linux-musl"
+    ;;
+  *)
+    echo "zellij does not publish binaries for $ARCH; skipping install"
+    exit 0
+    ;;
+esac
+
+wget -O zellij.tar.gz "https://github.com/zellij-org/zellij/releases/latest/download/zellij-${ZELLIJ_ARCH}.tar.gz"
 tar -xf zellij.tar.gz zellij
 sudo install zellij /usr/local/bin
 rm zellij.tar.gz zellij
