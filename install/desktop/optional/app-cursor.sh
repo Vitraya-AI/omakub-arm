@@ -1,5 +1,10 @@
 #!/bin/bash
 
+if [ "$(dpkg --print-architecture)" != "amd64" ]; then
+        echo "Cursor currently ships an AppImage for x86_64 only. Skipping install on $(dpkg --print-architecture)."
+        return 0 2>/dev/null || exit 0
+fi
+
 cd /tmp
 curl -L "https://www.cursor.com/api/download?platform=linux-x64&releaseTrack=stable" | jq -r '.downloadUrl' | xargs curl -L -o cursor.appimage
 sudo mv cursor.appimage /opt/cursor.appimage
