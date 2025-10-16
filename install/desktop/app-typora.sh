@@ -11,7 +11,19 @@
 
 # Install with db
 cd /tmp
-wget -O typora.deb "https://downloads.typora.io/linux/typora_1.10.8_amd64.deb"
+ARCH="$(dpkg --print-architecture)"
+
+case "$ARCH" in
+  amd64|arm64)
+    TYPO_ARCH="$ARCH"
+    ;;
+  *)
+    echo "Typora does not provide installers for $ARCH; skipping install"
+    exit 0
+    ;;
+esac
+
+wget -O typora.deb "https://downloads.typora.io/linux/typora_1.10.8_${TYPO_ARCH}.deb"
 sudo apt install -y /tmp/typora.deb
 rm typora.deb
 cd -
